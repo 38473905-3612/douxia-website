@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ config.seo_title }}</title>
+    <meta name="description" content="{{ config.seo_description }}">
+    <meta name="keywords" content="{{ config.seo_keywords }}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.douxia.cn/">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ config.seo_title }}">
+    <meta property="og:description" content="{{ config.seo_description }}">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="zh_CN">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================
+           CSS VARIABLES & RESET
+        ============================ */
+        :root {
+            --bg-primary: #030712;
+            --bg-secondary: #0a0f1e;
+            --bg-card: rgba(10, 20, 40, 0.7);
+            --bg-card-hover: rgba(15, 30, 60, 0.9);
+            --accent-cyan: #00f5ff;
+            --accent-purple: #a855f7;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --text-primary: #f0f6ff;
+            --text-secondary: #94a3b8;
+            --text-muted: #475569;
+            --border-glow: rgba(0, 245, 255, 0.15);
+            --border-cyan: rgba(0, 245, 255, 0.3);
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Noto Sans SC', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 3px; }
+
+        /* ============================
+           UTILITY CLASSES
+        ============================ */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .section { padding: 100px 0; }
+        .text-gradient {
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(0, 245, 255, 0.5), 0 0 40px rgba(0, 245, 255, 0.3);
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: var(--bg-primary);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0, 245, 255, 0.4); }
+        .btn-primary:hover::before { opacity: 1; }
+        .btn-primary span { position: relative; z-index: 1; }
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 31px;
+            background: transparent;
+            color: var(--accent-cyan);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: 1px solid var(--border-cyan);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-outline:hover { background: rgba(0, 245, 255, 0.1); box-shadow: 0 0 20px rgba(0, 245, 255, 0.2); }
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-cyan);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-label::before { content: '//'; opacity: 0.5; }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+        .section-desc {
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 560px;
+            line-height: 1.8;
+        }
+
+        /* ============================
+           BACKGROUND EFFECTS
+        ============================ */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-glow-1 {
+            position: fixed;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(0, 245, 255, 0.06) 0%, transparent 70%);
+            top: -200px; right: -100px;
+            pointer-events: none;
+            z-index: 0;
+            animation: float1 8s ease-in-out infinite;
+        }
+        .bg-glow-2 {
+            position: fixed;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.05) 0%, transparent 70%);
+            bottom: -150px; left: -100px;
+            pointer-events: none;
+            z-index: 0;
+            animation: float2 10s ease-in-out infinite;
+        }
+        @keyframes float1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-30px, 30px); } }
+        @keyframes float2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(30px, -20px); } }
+
+        /* ============================
+           NAVIGATION
+        ============================ */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 0 24px;
+            transition: all 0.3s;
+        }
+        .nav.scrolled {
+            background: rgba(3, 7, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glow);
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        .nav-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+        }
+        .nav-logo-text {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+            list-style: none;
+        }
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0; right: 0;
+            height: 1px;
+            background: var(--accent-cyan);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        .nav-links a:hover { color: var(--accent-cyan); }
+        .nav-links a:hover::after { transform: scaleX(1); }
+        .nav-cta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .nav-wechat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--accent-cyan);
+            cursor: pointer;
+        }
+        .nav-wechat svg { width: 16px; height: 16px; }
+        .mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+        .mobile-toggle span { display: block; width: 24px; height: 2px; background: var(--accent-cyan); margin: 5px 0; transition: all 0.3s; }
+
+        /* ============================
+           HERO SECTION
+        ============================ */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 80px;
+            overflow: hidden;
+        }
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(180deg, transparent 0%, var(--bg-primary) 100%),
+                radial-gradient(ellipse at 20% 50%, rgba(0, 245, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 30%, rgba(168, 85, 247, 0.06) 0%, transparent 50%);
+        }
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particle-float 6s linear infinite;
+        }
+        @keyframes particle-float {
+            0% { opacity: 0; transform: translateY(100vh) scale(0); }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.3; }
+            100% { opacity: 0; transform: translateY(-100px) scale(1); }
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(0, 245, 255, 0.08);
+            border: 1px solid var(--border-cyan);
+            border-radius: 100px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-cyan);
+            margin-bottom: 28px;
+            width: fit-content;
+        }
+        .hero-badge .dot {
+            width: 6px; height: 6px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 5vw, 60px);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 24px;
+        }
+        .hero-title .line2 {
+            display: block;
+            font-size: 0.65em;
+            font-weight: 400;
+            color: var(--text-secondary);
+            letter-spacing: 0;
+            margin-top: 8px;
+        }
+        .hero-desc {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            margin-bottom: 40px;
+            max-width: 480px;
+        }
+        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-glow);
+        }
+        .hero-stat-value {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--accent-cyan);
+        }
+        .hero-stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-orb {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 245, 255, 0.15), rgba(168, 85, 247, 0.1) 50%, transparent 70%);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: orb-pulse 4s ease-in-out infinite;
+        }
+        .hero-orb::before {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            border: 1px dashed rgba(0, 245, 255, 0.1);
+            animation: orb-rotate 20s linear infinite;
+        }
+        .hero-orb::after {
+            content: '';
+            position: absolute;
+            inset: -40px;
+            border-radius: 50%;
+            border: 1px dotted rgba(168, 85, 247, 0.08);
+            animation: orb-rotate 30s linear infinite reverse;
+        }
+        @keyframes orb-pulse { 0%, 100% { box-shadow: 0 0 60px rgba(0, 245, 255, 0.1), 0 0 120px rgba(168, 85, 247, 0.05); } 50% { box-shadow: 0 0 80px rgba(0, 245, 255, 0.2), 0 0 160px rgba(168, 85, 247, 0.1); } }
+        @keyframes orb-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .hero-orb-inner {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1), rgba(168, 85, 247, 0.15));
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        .hero-orb-icon { font-size: 48px; margin-bottom: 8px; }
+        .hero-orb-label {
+            font-family: var(--font-display);
+            font-size: 14px;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+        }
+        .hero-orbit-item {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            animation: orbit-float 3s ease-in-out infinite;
+        }
+        .hero-orbit-item:nth-child(1) { top: 20px; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+        .hero-orbit-item:nth-child(2) { top: 50%; right: -10px; transform: translateY(-50%); animation-delay: 0.5s; }
+        .hero-orbit-item:nth-child(3) { bottom: 20px; left: 50%; transform: translateX(-50%); animation-delay: 1s; }
+        .hero-orbit-item:nth-child(4) { top: 50%; left: -10px; transform: translateY(-50%); animation-delay: 1.5s; }
+        @keyframes orbit-float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-6px) scale(1.05); } }
+        .hero-orbit-item:nth-child(2) { animation-name: orbit-float-r; }
+        .hero-orbit-item:nth-child(4) { animation-name: orbit-float-r; }
+        @keyframes orbit-float-r { 0%, 100% { transform: translateX(0) scale(1); } 50% { transform: translateX(-6px) scale(1.05); } }
+
+        /* ============================
+           SERVICES SECTION
+        ============================ */
+        .services { position: relative; z-index: 1; }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 60px;
+        }
+        .service-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 40px 32px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+        }
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .service-card:hover { background: var(--bg-card-hover); border-color: var(--border-cyan); transform: translateY(-8px); }
+        .service-card:hover::before { opacity: 1; }
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 24px;
+        }
+        .service-card:nth-child(1) .service-icon { background: rgba(0, 245, 255, 0.1); }
+        .service-card:nth-child(2) .service-icon { background: rgba(168, 85, 247, 0.1); }
+        .service-card:nth-child(3) .service-icon { background: rgba(59, 130, 246, 0.1); }
+        .service-title {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            letter-spacing: 0.5px;
+        }
+        .service-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+        .service-features { list-style: none; }
+        .service-features li {
+            font-size: 13px;
+            color: var(--text-muted);
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .service-features li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-cyan);
+            font-size: 11px;
+        }
+        .service-card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-cyan);
+            text-decoration: none;
+            margin-top: 20px;
+            letter-spacing: 1px;
+            transition: gap 0.3s;
+        }
+        .service-card-link:hover { gap: 12px; }
+
+        /* ============================
+           WHY US / DIFFERENTIATORS
+        ============================ */
+        .whyus { position: relative; z-index: 1; background: rgba(10, 15, 30, 0.5); }
+        .whyus-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            margin-top: 60px;
+        }
+        .whyus-visual {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .terminal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cyan);
+            border-radius: 12px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 0 60px rgba(0, 245, 255, 0.1), inset 0 0 60px rgba(0, 245, 255, 0.02);
+        }
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: rgba(0, 245, 255, 0.05);
+            border-bottom: 1px solid var(--border-glow);
+        }
+        .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .terminal-dot:nth-child(1) { background: #ff5f56; }
+        .terminal-dot:nth-child(2) { background: #ffbd2e; }
+        .terminal-dot:nth-child(3) { background: #27c93f; }
+        .terminal-title {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-left: 8px;
+        }
+        .terminal-body { padding: 20px; font-family: var(--font-mono); font-size: 13px; }
+        .terminal-line { display: flex; margin-bottom: 8px; }
+        .terminal-prompt { color: var(--accent-cyan); margin-right: 8px; flex-shrink: 0; }
+        .terminal-text { color: var(--text-primary); }
+        .terminal-text.dim { color: var(--text-muted); }
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px; height: 14px;
+            background: var(--accent-cyan);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .whyus-list { display: flex; flex-direction: column; gap: 24px; }
+        .whyus-item { display: flex; gap: 20px; align-items: flex-start; }
+        .whyus-item-num {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--accent-cyan);
+            opacity: 0.3;
+            line-height: 1;
+            flex-shrink: 0;
+            width: 40px;
+        }
+        .whyus-item-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+        .whyus-item-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+        /* ============================
+           NEWS SECTION
+        ============================ */
+        .news { position: relative; z-index: 1; }
+        .news-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+        .news-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        .news-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 28px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .news-card:hover { border-color: var(--border-cyan); background: var(--bg-card-hover); }
+        .news-card:first-child {
+            grid-column: span 1;
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.08), rgba(168, 85, 247, 0.05));
+        }
+        .news-date {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .news-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            background: rgba(0, 245, 255, 0.1);
+            border-radius: 4px;
+            color: var(--accent-cyan);
+        }
+        .news-title {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            transition: color 0.3s;
+        }
+        .news-card:hover .news-title { color: var(--accent-cyan); }
+        .news-source { font-size: 12px; color: var(--text-muted); margin-top: auto; }
+
+        /* ============================
+           CTA SECTION
+        ============================ */
+        .cta-section {
+            position: relative;
+            z-index: 1;
+            padding: 100px 0;
+        }
+        .cta-box {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.08), rgba(168, 85, 247, 0.06));
+            border: 1px solid var(--border-cyan);
+            border-radius: 24px;
+            padding: 80px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(0, 245, 255, 0.05) 0%, transparent 70%);
+        }
+        .cta-content { position: relative; z-index: 1; }
+        .cta-title {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 4vw, 48px);
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        .cta-desc { font-size: 17px; color: var(--text-secondary); margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto; }
+        .cta-wechat-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 40px;
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid var(--border-cyan);
+            border-radius: 100px;
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+            margin-bottom: 32px;
+        }
+
+        /* ============================
+           CONTACT FORM
+        ============================ */
+        .contact-section { position: relative; z-index: 1; }
+        .contact-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 60px;
+        }
+        .contact-form {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 40px;
+        }
+        .form-group { margin-bottom: 24px; }
+        .form-label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 245, 255, 0.1);
+        }
+        .form-textarea { resize: vertical; min-height: 120px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: var(--bg-primary);
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .form-submit:hover { box-shadow: 0 0 40px rgba(0, 245, 255, 0.3); transform: translateY(-2px); }
+        .form-note {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 16px;
+        }
+        .contact-info { display: flex; flex-direction: column; gap: 32px; justify-content: center; }
+        .contact-info-item { display: flex; gap: 16px; align-items: flex-start; }
+        .contact-info-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(0, 245, 255, 0.08);
+            border: 1px solid var(--border-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .contact-info-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
+        .contact-info-value { font-size: 16px; color: var(--text-primary); font-weight: 500; }
+
+        /* ============================
+           FOOTER
+        ============================ */
+        .footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border-glow);
+            padding: 60px 0 30px;
+            background: rgba(3, 7, 18, 0.8);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-brand-name {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+        .footer-brand-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+        .footer-col-title {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            color: var(--accent-cyan);
+        }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--accent-cyan); }
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-glow);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .footer-wechat-highlight {
+            font-family: var(--font-mono);
+            color: var(--accent-cyan);
+        }
+
+        /* ============================
+           FLOATING ELEMENTS
+        ============================ */
+        .float-contact {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .float-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .float-btn:hover { transform: scale(1.1); }
+        .float-btn.wechat {
+            background: linear-gradient(135deg, #07c160, #06ad56);
+            color: white;
+        }
+        .float-btn.phone {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: var(--bg-primary);
+        }
+
+        /* ============================
+           ANIMATIONS (on scroll)
+        ============================ */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* ============================
+           RESPONSIVE
+        ============================ */
+        @media (max-width: 1024px) {
+            .hero-content { grid-template-columns: 1fr; text-align: center; }
+            .hero-desc { margin: 0 auto 40px; }
+            .hero-buttons { justify-content: center; }
+            .hero-stats { justify-content: center; }
+            .hero-visual { display: none; }
+            .services-grid { grid-template-columns: 1fr 1fr; }
+            .whyus-layout { grid-template-columns: 1fr; }
+            .whyus-visual { display: none; }
+            .news-grid { grid-template-columns: 1fr 1fr; }
+            .contact-layout { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 640px) {
+            .nav-links { display: none; }
+            .mobile-toggle { display: block; }
+            .services-grid { grid-template-columns: 1fr; }
+            .news-grid { grid-template-columns: 1fr; }
+            .hero-stats { flex-direction: column; gap: 20px; align-items: center; }
+            .form-row { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+            .cta-box { padding: 60px 30px; }
+            .cta-wechat-display { font-size: 18px; }
+        }
+
+        /* Mobile nav overlay */
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 7, 18, 0.98);
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+        }
+        .nav-overlay.open { display: flex; }
+        .nav-overlay a {
+            font-family: var(--font-display);
+            font-size: 24px;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+        .nav-overlay a:hover { color: var(--accent-cyan); }
+        .nav-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 32px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+
+    <!-- Particles -->
+    <div class="hero-particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="mainNav">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon">🦐</div>
+                <span class="nav-logo-text">豆虾工作室</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#services">服务</a></li>
+                <li><a href="#whyus">优势</a></li>
+                <li><a href="#news">AI情报</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+            <div class="nav-cta">
+                <span class="nav-wechat">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89c-.135-.01-.269-.03-.407-.03zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/></svg>
+                    {{ config.wechat }}
+                </span>
+                <a href="#contact" class="btn-primary" style="padding: 10px 20px; font-size: 12px;"><span>立即咨询</span></a>
+            </div>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="菜单">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Nav Overlay -->
+    <div class="nav-overlay" id="navOverlay">
+        <button class="nav-close" id="navClose">×</button>
+        <a href="#services" class="nav-overlay-link">服务</a>
+        <a href="#whyus" class="nav-overlay-link">优势</a>
+        <a href="#news" class="nav-overlay-link">AI情报</a>
+        <a href="#about" class="nav-overlay-link">关于</a>
+        <a href="#contact" class="nav-overlay-link">联系</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="container" style="position: relative; z-index: 2; width: 100%;">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <div class="hero-badge">
+                        <span class="dot"></span>
+                        <span>辽宁 · 企业AI赋能专家</span>
+                    </div>
+                    <h1 class="hero-title">
+                        <span class="text-gradient glow-text">让每一家中小企业</span>
+                        <span class="line2">都能用上<span style="color: var(--accent-cyan);"> AI 龙虾</span>，真正提升效率</span>
+                    </h1>
+                    <p class="hero-desc">
+                        豆虾工作室为辽宁中小企业提供从 AI 规划咨询、私有化龙虾部署到长期带养托管的全链路服务。不卖软件，卖的是结果。
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn-primary"><span>🚀 立即开始 AI 赋能</span></a>
+                        <a href="#services" class="btn-outline">了解服务 →</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div>
+                            <div class="hero-stat-value">3</div>
+                            <div class="hero-stat-label">核心服务</div>
+                        </div>
+                        <div>
+                            <div class="hero-stat-value">24h</div>
+                            <div class="hero-stat-label">快速响应</div>
+                        </div>
+                        <div>
+                            <div class="hero-stat-value">辽宁</div>
+                            <div class="hero-stat-label">本地服务</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-orb">
+                        <div class="hero-orbit-item">📊</div>
+                        <div class="hero-orbit-item">💬</div>
+                        <div class="hero-orbit-item">🤖</div>
+                        <div class="hero-orbit-item">📁</div>
+                        <div class="hero-orb-inner">
+                            <div class="hero-orb-icon">🦐</div>
+                            <div class="hero-orb-label">AI · 龙虾</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section services" id="services">
+        <div class="container">
+            <div class="reveal">
+                <div class="section-label">SERVICES</div>
+                <h2 class="section-title">三大核心服务，<br>覆盖企业 AI 落地全链路</h2>
+                <p class="section-desc">从诊断规划到长期运营，我们陪伴企业 AI 落地的每一步。</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card reveal reveal-delay-1">
+                    <div class="service-icon">🔍</div>
+                    <h3 class="service-title">AI 赋能咨询</h3>
+                    <p class="service-desc">深入企业一线，诊断真实痛点，输出可落地的 AI 赋能方案。不是卖工具，是帮你想清楚怎么用 AI 解决业务问题。</p>
+                    <ul class="service-features">
+                        <li>企业 AI 现状诊断</li>
+                        <li>适合场景筛选与优先级排序</li>
+                        <li>AI 选型建议与路线图规划</li>
+                        <li>现有流程的 AI 化改造方案</li>
+                    </ul>
+                    <a href="#contact" class="service-card-link">预约咨询 →</a>
+                </div>
+                <div class="service-card reveal reveal-delay-2">
+                    <div class="service-icon">🖥️</div>
+                    <h3 class="service-title">龙虾本地部署</h3>
+                    <p class="service-desc">将 AI 龙虾私有化部署到您的服务器，数据不出门，信息更安全。适合对数据安全有要求、想拥有自主控制权的企业。</p>
+                    <ul class="service-features">
+                        <li>私有化部署，数据自主可控</li>
+                        <li>适配企业现有 IT 环境</li>
+                        <li>内网环境可用，无外网依赖</li>
+                        <li>一次部署，长期使用</li>
+                    </ul>
+                    <a href="#contact" class="service-card-link">了解方案 →</a>
+                </div>
+                <div class="service-card reveal reveal-delay-3">
+                    <div class="service-icon">🦐</div>
+                    <h3 class="service-title">定制化龙虾带养</h3>
+                    <p class="service-desc">您说需求，我们来养龙虾。从配置、调优到日常运维，全部由专业团队负责。您的龙虾出问题，我们负责到底。</p>
+                    <ul class="service-features">
+                        <li>专属配置，按需定制</li>
+                        <li>定期调优，性能升级</li>
+                        <li>7×24 小时运维保障</li>
+                        <li>结果导向，用效果说话</li>
+                    </ul>
+                    <a href="#contact" class="service-card-link">委托带养 →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section class="section whyus" id="whyus">
+        <div class="container">
+            <div class="whyus-layout">
+                <div class="whyus-visual reveal">
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="terminal-dot"></div>
+                            <div class="terminal-dot"></div>
+                            <div class="terminal-dot"></div>
+                            <span class="terminal-title">douxia-cli ~ AI赋能工作台</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">$</span>
+                                <span class="terminal-text">douxia diagnose --company "沈阳XX商贸"</span>
+                            </div>
+                            <div class="terminal-line" style="margin-top: 4px;">
+                                <span class="terminal-text dim">正在分析企业数据...</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">✓</span>
+                                <span class="terminal-text">发现 3 个高价值 AI 落地场景</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">✓</span>
+                                <span class="terminal-text">智能客户跟进 · 每日销售汇总 · 库存预警</span>
+                            </div>
+                            <div class="terminal-line" style="margin-top: 8px;">
+                                <span class="terminal-prompt">$</span>
+                                <span class="terminal-text">douxia deploy --scene "客户跟进"</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">✓</span>
+                                <span class="terminal-text">龙虾部署完成，正在学习您的客户数据...</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">✓</span>
+                                <span class="terminal-text">已接入微信，明早 8:00 发送日报<span class="terminal-cursor"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="whyus-content">
+                    <div class="reveal">
+                        <div class="section-label">WHY DOUXIA</div>
+                        <h2 class="section-title">为什么选择<br><span class="text-gradient">豆虾工作室</span>？</h2>
+                        <p class="section-desc">我们不只是技术服务商，更是您企业 AI 转型路上的长期伙伴。</p>
+                    </div>
+                    <div class="whyus-list" style="margin-top: 40px;">
+                        <div class="whyus-item reveal reveal-delay-1">
+                            <div class="whyus-item-num">01</div>
+                            <div>
+                                <div class="whyus-item-title">本地化服务，响应更快</div>
+                                <div class="whyus-item-desc">扎根辽宁，深入了解本地企业生态。上门沟通、现场部署、面对面运维，不是远程甩锅。</div>
+                            </div>
+                        </div>
+                        <div class="whyus-item reveal reveal-delay-2">
+                            <div class="whyus-item-num">02</div>
+                            <div>
+                                <div class="whyus-item-title">结果导向，不卖空壳</div>
+                                <div class="whyus-item-desc">交付标准是龙虾真正嵌入您的工作流——每天早上给您发报表、帮您催款、回答客户问题。不是上线就算完事。</div>
+                            </div>
+                        </div>
+                        <div class="whyus-item reveal reveal-delay-3">
+                            <div class="whyus-item-num">03</div>
+                            <div>
+                                <div class="whyus-item-title">数据安全，零后顾之忧</div>
+                                <div class="whyus-item-desc">支持私有化部署，企业数据留存在自己的服务器。信息不外泄，合规无忧。</div>
+                            </div>
+                        </div>
+                        <div class="whyus-item reveal">
+                            <div class="whyus-item-num">04</div>
+                            <div>
+                                <div class="whyus-item-title">价格透明，定制而非套餐</div>
+                                <div class="whyus-item-desc">根据您的实际需求定制方案和报价，没有套路，没有捆绑销售，按需付费。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section class="section news" id="news">
+        <div class="container">
+            <div class="news-header reveal">
+                <div>
+                    <div class="section-label">AI INTELLIGENCE</div>
+                    <h2 class="section-title">AI 情报站</h2>
+                    <p class="section-desc">每日更新 AI 行业热点，助您把握 AI 赋能企业的最新趋势。</p>
+                </div>
+                <a href="/news/" class="btn-outline" style="flex-shrink: 0;">查看全部 →</a>
+            </div>
+            <div class="news-grid">
+                {% if news and news|length > 0 %}
+                    {% for item in news %}
+                    <a href="{{ item.url or '#' }}" target="_blank" class="news-card reveal reveal-delay-{{ loop.index }}" style="text-decoration: none;">
+                        <div class="news-date">
+                            <span>{{ item.created_at[:10] if item.created_at else '' }}</span>
+                            {% if item.source %}
+                            <span class="news-tag">{{ item.source[:6] if item.source|length > 6 else item.source }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="news-title">{{ item.title }}</div>
+                        <div class="news-source">
+                            {% if item.content %}{{ item.content[:60] }}...{% endif %}
+                        </div>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="news-card reveal">
+                        <div class="news-date"><span>2026-04-12</span></div>
+                        <div class="news-title">AI 情报站正在启动抓取...</div>
+                        <div class="news-source">每日自动更新 AI 行业热点资讯</div>
+                    </div>
+                    <div class="news-card reveal reveal-delay-1">
+                        <div class="news-date"><span>2026-04-11</span></div>
+                        <div class="news-title">中小企业 AI 落地：2026 年的新机遇</div>
+                        <div class="news-source">豆虾工作室 · AI赋能系列</div>
+                    </div>
+                    <div class="news-card reveal reveal-delay-2">
+                        <div class="news-date"><span>2026-04-10</span></div>
+                        <div class="news-title">本地部署 vs 云端：企业如何选择 AI 方案</div>
+                        <div class="news-source">技术选型指南</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section" id="about" style="padding: 80px 0;">
+        <div class="container">
+            <div class="reveal" style="max-width: 720px; margin: 0 auto; text-align: center;">
+                <div class="section-label" style="justify-content: center;">ABOUT US</div>
+                <h2 class="section-title">{{ config.about_title or '关于豆虾工作室' }}</h2>
+                <div style="text-align: left; margin-top: 40px;">
+                    {% for para in (config.about_content or '').split('\n') %}
+                        {% if para.strip() %}
+                        <p style="font-size: 16px; color: var(--text-secondary); line-height: 2; margin-bottom: 20px;">{{ para }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-box reveal">
+                <div class="cta-content">
+                    <div class="section-label" style="justify-content: center;">START NOW</div>
+                    <h2 class="cta-title">让您的企业<br><span class="text-gradient">先人一步</span> 用上 AI</h2>
+                    <p class="cta-desc">无论是想了解 AI 能帮您做什么，还是已经有明确的部署需求，扫码联系我们，专业团队随时响应。</p>
+                    <div class="cta-wechat-display">
+                        <span>📱</span>
+                        <span>{{ config.wechat }}</span>
+                    </div>
+                    <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                        <a href="#contact" class="btn-primary"><span>📋 填写咨询表单</span></a>
+                        <a href="javascript:;" class="btn-outline" onclick="alert('请添加微信 {{ config.wechat }} 联系我们')"><span>💬 微信直接咨询</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section contact-section" id="contact">
+        <div class="container">
+            <div class="reveal" style="text-align: center; margin-bottom: 40px;">
+                <div class="section-label" style="justify-content: center;">CONTACT</div>
+                <h2 class="section-title">联系我们</h2>
+                <p class="section-desc" style="margin: 0 auto;">留下您的需求，我们将尽快与您联系，为您的企业量身定制 AI 赋能方案。</p>
+            </div>
+            <div class="contact-layout">
+                <div class="contact-form reveal">
+                    <form id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">您的姓名 *</label>
+                                <input type="text" class="form-input" name="name" placeholder="张三" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">公司名称</label>
+                                <input type="text" class="form-input" name="company" placeholder="XX科技有限公司">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">联系电话 / 微信</label>
+                            <input type="text" class="form-input" name="phone" placeholder="手机号或微信号">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">您的需求 *</label>
+                            <textarea class="form-textarea" name="message" placeholder="请简单描述您的企业情况，以及您希望通过 AI 解决什么问题..." required></textarea>
+                        </div>
+                        <button type="submit" class="form-submit" id="submitBtn">🚀 提交咨询</button>
+                        <p class="form-note" id="formNote"></p>
+                    </form>
+                </div>
+                <div class="contact-info reveal reveal-delay-1">
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">📱</div>
+                        <div>
+                            <div class="contact-info-label">微信 / 手机</div>
+                            <div class="contact-info-value">{{ config.wechat }}</div>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">📍</div>
+                        <div>
+                            <div class="contact-info-label">服务区域</div>
+                            <div class="contact-info-value">辽宁沈阳 · 抚顺 · 本溪 · 全省</div>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">⏰</div>
+                        <div>
+                            <div class="contact-info-label">响应时间</div>
+                            <div class="contact-info-value">24 小时内回复<br>工作日 9:00 - 18:00 即时响应</div>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">💡</div>
+                        <div>
+                            <div class="contact-info-label">首访咨询</div>
+                            <div class="contact-info-value">免费企业 AI 现状诊断一次<br>先了解，再合作</div>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-cyan); border-radius: 12px; padding: 24px; text-align: center;">
+                        <div style="font-family: var(--font-display); font-size: 24px; font-weight: 900; color: var(--accent-cyan); margin-bottom: 8px;">{{ config.wechat }}</div>
+                        <div style="font-size: 13px; color: var(--text-muted);">扫码或搜索微信号联系我们</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand-name">🦐 豆虾工作室</div>
+                    <p class="footer-brand-desc">{{ config.slogan or '让每一家辽宁企业，都能用上AI' }}</p>
+                    <div style="margin-top: 16px;">
+                        <span style="font-family: var(--font-mono); font-size: 14px; color: var(--accent-cyan);">{{ config.wechat }}</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="footer-col-title">服务</div>
+                    <ul class="footer-links">
+                        <li><a href="#services">AI 赋能咨询</a></li>
+                        <li><a href="#services">龙虾本地部署</a></li>
+                        <li><a href="#services">定制化带养服务</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="footer-col-title">公司</div>
+                    <ul class="footer-links">
+                        <li><a href="#about">关于我们</a></li>
+                        <li><a href="#news">AI 情报站</a></li>
+                        <li><a href="#contact">联系方式</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="footer-col-title">联系</div>
+                    <ul class="footer-links">
+                        <li><a href="javascript:;">微信：{{ config.wechat }}</a></li>
+                        <li><a href="#contact">在线预约</a></li>
+                        <li><a href="/admin/">管理后台</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 豆虾工作室 版权所有</span>
+                <span>辽宁省沈阳市 · 企业AI赋能专家</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Contact -->
+    <div class="float-contact">
+        <a href="javascript:;" class="float-btn wechat" title="微信联系" onclick="alert('微信：{{ config.wechat }}')">💬</a>
+        <a href="#contact" class="float-btn phone" title="立即咨询">📞</a>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Particles
+        (function() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 6 + 's';
+                p.style.animationDuration = (4 + Math.random() * 4) + 's';
+                p.style.width = (1 + Math.random() * 2) + 'px';
+                p.style.height = p.style.width;
+                if (Math.random() > 0.7) p.style.background = '#a855f7';
+                container.appendChild(p);
+            }
+        })();
+
+        // Scroll reveal
+        (function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        })();
+
+        // Nav scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Mobile nav
+        document.getElementById('mobileToggle').addEventListener('click', () => {
+            document.getElementById('navOverlay').classList.add('open');
+        });
+        document.getElementById('navClose').addEventListener('click', () => {
+            document.getElementById('navOverlay').classList.remove('open');
+        });
+        document.querySelectorAll('.nav-overlay a').forEach(a => {
+            a.addEventListener('click', () => {
+                document.getElementById('navOverlay').classList.remove('open');
+            });
+        });
+
+        // Contact form
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const note = document.getElementById('formNote');
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            btn.textContent = '提交中...';
+            btn.disabled = true;
+            
+            try {
+                const res = await fetch('/api/contact/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                
+                if (result.success) {
+                    note.textContent = '✅ ' + result.message;
+                    note.style.color = '#10b981';
+                    e.target.reset();
+                } else {
+                    note.textContent = '❌ ' + result.message;
+                    note.style.color = '#ef4444';
+                }
+            } catch (err) {
+                note.textContent = '❌ 网络错误，请稍后重试';
+                note.style.color = '#ef4444';
+            }
+            
+            btn.textContent = '🚀 提交咨询';
+            btn.disabled = false;
+            setTimeout(() => { note.textContent = ''; }, 5000);
+        });
+    </script>
+</body>
+</html>
